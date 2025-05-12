@@ -2,9 +2,8 @@ import sqlite3
 import os
 from datetime import datetime
 
-# Dossier accessible à l'utilisateur 
-base_path = os.path.expanduser("~/Documents")
-db_name = os.path.join(base_path, "Data_Poitrine.db")
+
+db_name = os.path.join(os.path.dirname(__file__), "Data_Poitrine.db")
 
 def init_breast_table():
     conn = sqlite3.connect(db_name)

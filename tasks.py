@@ -580,6 +580,7 @@ class BreastMeasurementTask(_Task):
             volume = AddonStorage.get("BREAST_VOLUME_SYM_DIFF") * 1_000_000  #  cm³
 
             insert_breast_measurement(height, w_left, w_right, band, bust, volume)
+
             self._finalize()
             return
 

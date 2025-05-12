@@ -1,12 +1,10 @@
 import streamlit as st
 import sqlite3
 import pandas as pd
-import matplotlib.pyplot as plt
+import os
 
-# --- Configuration ---
-DB_PATH = "C:/Users/longd/Documents/Data_Poitrine.db"  # adapte ce chemin si besoin
+DB_PATH = "C:/Users/longd/Documents/Data_Poitrine.db" 
 
-# --- Connexion à la base ---
 def load_breast_data():
     conn = sqlite3.connect(DB_PATH)
     df = pd.read_sql_query("SELECT * FROM BreastMeasurements ORDER BY timestamp DESC", conn)
@@ -32,6 +30,7 @@ selected_row = st.selectbox("Sélectionnez une mesure :", df["timestamp"])
 
 selected_data = df[df["timestamp"] == selected_row].iloc[0]
 
+# --- Affichage des données ---
 st.markdown(f"""
 ### 🧍 Détails de la mesure
 
@@ -43,4 +42,3 @@ st.markdown(f"""
 - 🔴 **Tour de poitrine (bust) :** {selected_data['bust_circumference_cm']:.2f} cm  
 - 💧 **Volume estimé :** {selected_data['volume_cm3']:.1f} cm³
 """)
-

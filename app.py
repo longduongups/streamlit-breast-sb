@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 import os
 
-DB_PATH = "C:/Users/longd/Documents/Data_Poitrine.db" 
+DB_PATH = os.path.join(os.path.dirname(__file__), "Data_Poitrine.db")
 
 def load_breast_data():
     conn = sqlite3.connect(DB_PATH)

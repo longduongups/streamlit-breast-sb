@@ -2,12 +2,11 @@ import sqlite3
 import os
 from datetime import datetime
 
-
-DB_PATH = "C:/Users/longd/Documents/Data_Poitrine.db"
+DB_NAME = os.path.join(os.path.dirname(__file__), "Data_Poitrine.db")
 
 def init_breast_table():
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS BreastMeasurements (
@@ -27,7 +26,7 @@ def init_breast_table():
 def insert_breast_measurement(height, w_left, w_right, band, bust, volume):
 
     timestamp = datetime.now().isoformat()
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO BreastMeasurements (

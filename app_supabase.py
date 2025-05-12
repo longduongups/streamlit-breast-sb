@@ -29,12 +29,15 @@ st.markdown("""
 <style>
     .centered-box {
         background-color: #f0f2f6;
-        padding: 20px;
-        margin-bottom: 20px;
-        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 10px;
         text-align: center;
         color: black;
         font-family: sans-serif;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
     }
     .title-text {
         font-size: 22px;
@@ -46,7 +49,7 @@ st.markdown("""
         margin-bottom: 5px;
     }
     .measurement-value {
-        font-size: 28px;
+        font-size: 26px;
         font-weight: bold;
     }
 </style>
@@ -64,7 +67,7 @@ selected = st.selectbox("Sélectionnez une mesure :", df["timestamp"])
 row = df[df["timestamp"] == selected].iloc[0]
 
 # --- Visual layout ---
-col1, col2 = st.columns(2, gap="large")
+col1, col2 = st.columns([1, 1], gap="small")
 with col1:
     st.markdown("""
     <div class="centered-box">
@@ -104,4 +107,3 @@ st.markdown("""
     int(row['bust_circumference_cm']), int(row['bust_circumference_cm']),
     int(row['band_circumference_cm']), int(row['band_circumference_cm'])
 ), unsafe_allow_html=True)
-

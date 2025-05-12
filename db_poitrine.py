@@ -7,7 +7,7 @@ DB_PATH = "C:/Users/longd/Documents/Data_Poitrine.db"
 
 def init_breast_table():
 
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS BreastMeasurements (
@@ -27,7 +27,7 @@ def init_breast_table():
 def insert_breast_measurement(height, w_left, w_right, band, bust, volume):
 
     timestamp = datetime.now().isoformat()
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO BreastMeasurements (

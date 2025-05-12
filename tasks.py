@@ -16,6 +16,7 @@ from mathutils.geometry import convex_hull_2d
 from mathutils import Vector
 from datetime import datetime
 from .db_poitrine import insert_breast_measurement
+from .db_supabase import send_to_supabase
 
 
 # ******************************************************************************************
@@ -580,7 +581,7 @@ class BreastMeasurementTask(_Task):
             volume = AddonStorage.get("BREAST_VOLUME_SYM_DIFF") * 1_000_000  #  cm³
 
             insert_breast_measurement(height, w_left, w_right, band, bust, volume)
-
+            send_to_supabase(height, w_left, w_right, band, bust, volume)
             self._finalize()
             return
 

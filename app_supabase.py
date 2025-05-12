@@ -23,37 +23,85 @@ def load_data():
         return pd.DataFrame()
     return pd.DataFrame(r.json()).sort_values("timestamp", ascending=False)
 
-# --- Display visual card for a selected row ---
-def show_measurement_card(row):
-    st.markdown(f"""
-    <div style="background-color:#f0f2f6;padding:20px;border-radius:10px;color:#000000">
-        <h4>🧍 Mesure du {row['timestamp']}</h4>
-        <ul style="list-style:none;padding-left:0">
-            <li><b>Hauteur :</b> {row['height_cm']:.2f} cm</li>
-            <li><b>Largeur gauche :</b> {row['width_left_cm']:.2f} cm</li>
-            <li><b>Largeur droite :</b> {row['width_right_cm']:.2f} cm</li>
-            <li><b>Bande :</b> {row['band_circumference_cm']:.2f} cm</li>
-            <li><b>Buste :</b> {row['bust_circumference_cm']:.2f} cm</li>
-            <li><b>Volume :</b> {row['volume_cm3']:.1f} cm³</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
 # --- Start of Streamlit App ---
 st.set_page_config(page_title="Mesures Poitrine", layout="centered")
-st.title("📊 Visualisation des mesures de poitrine")
+st.markdown("""
+<style>
+    .centered-box {
+        background-color: #f0f2f6;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        text-align: center;
+        color: black;
+        font-family: sans-serif;
+    }
+    .title-text {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+    .section-label {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    .measurement-value {
+        font-size: 28px;
+        font-weight: bold;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# --- Load data ---
+st.title("📊 Visualisation des mesures de poitrine")
 df = load_data()
 
 if df.empty:
     st.warning("Aucune donnée disponible.")
     st.stop()
 
-# --- Dropdown to select a measure ---
-st.subheader("🔎 Détail d'une mesure")
+st.subheader("👋 Hello, voici vos mesures !")
 selected = st.selectbox("Sélectionnez une mesure :", df["timestamp"])
 row = df[df["timestamp"] == selected].iloc[0]
 
-# --- Show summary card ---
-show_measurement_card(row)
+# --- Visual layout ---
+col1, col2 = st.columns(2, gap="large")
+with col1:
+    st.markdown("""
+    <div class="centered-box">
+        <div class="section-label">LEFT</div>
+        <div>height</div>
+        <div class="measurement-value">{:.1f}</div>
+        <div>width</div>
+        <div class="measurement-value">{:.1f}</div>
+    </div>
+    """.format(row['height_cm'], row['width_left_cm']), unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="centered-box">
+        <div class="section-label">RIGHT</div>
+        <div>height</div>
+        <div class="measurement-value">{:.1f}</div>
+        <div>width</div>
+        <div class="measurement-value">{:.1f}</div>
+    </div>
+    """.format(row['height_cm'], row['width_right_cm']), unsafe_allow_html=True)
+
+# --- Volume and bust/under ---
+st.markdown("""
+<div class="centered-box">
+    <div class="section-label">volume</div>
+    <div class="measurement-value">{:.1f} cm³</div>
+</div>
+<div class="centered-box">
+    <div class="section-label">bust</div>
+    <progress value="{}" max="150"></progress> {} cm
+    <div class="section-label">under</div>
+    <progress value="{}" max="150"></progress> {} cm
+</div>
+""".format(
+    row['volume_cm3'],
+    int(row['bust_circumference_cm']), int(row['bust_circumference_cm']),
+    int(row['band_circumference_cm']), int(row['band_circumference_cm'])
+), unsafe_allow_html=True)
+

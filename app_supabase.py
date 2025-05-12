@@ -24,20 +24,24 @@ def load_data():
     return pd.DataFrame(r.json()).sort_values("timestamp", ascending=False)
 
 # --- Start of Streamlit App ---
-st.set_page_config(page_title="Mesures Poitrine", layout="centered")
+st.set_page_config(page_title="Mesures Poitrine", layout="wide")
 st.markdown("""
 <style>
     .centered-box {
         background-color: #f0f2f6;
         padding: 12px;
-        margin-bottom: 12px;
+        margin: 10px;
         border-radius: 10px;
         text-align: center;
         color: black;
         font-family: sans-serif;
-        max-width: 220px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
+    }
+    .flex-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
     }
     .title-text {
         font-size: 22px;
@@ -66,44 +70,38 @@ st.subheader("👋 Hello, voici vos mesures !")
 selected = st.selectbox("Sélectionnez une mesure :", df["timestamp"])
 row = df[df["timestamp"] == selected].iloc[0]
 
-# --- Visual layout ---
-col1, col2 = st.columns([1, 1], gap="small")
-with col1:
-    st.markdown("""
+# --- Visual layout using flexbox ---
+st.markdown(f"""
+<div class="flex-container">
     <div class="centered-box">
         <div class="section-label">LEFT</div>
         <div>height</div>
-        <div class="measurement-value">{:.1f}</div>
+        <div class="measurement-value">{row['height_cm']:.1f}</div>
         <div>width</div>
-        <div class="measurement-value">{:.1f}</div>
+        <div class="measurement-value">{row['width_left_cm']:.1f}</div>
     </div>
-    """.format(row['height_cm'], row['width_left_cm']), unsafe_allow_html=True)
-
-with col2:
-    st.markdown("""
     <div class="centered-box">
         <div class="section-label">RIGHT</div>
         <div>height</div>
-        <div class="measurement-value">{:.1f}</div>
+        <div class="measurement-value">{row['height_cm']:.1f}</div>
         <div>width</div>
-        <div class="measurement-value">{:.1f}</div>
+        <div class="measurement-value">{row['width_right_cm']:.1f}</div>
     </div>
-    """.format(row['height_cm'], row['width_right_cm']), unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
 # --- Volume and bust/under ---
-st.markdown("""
-<div class="centered-box" style="max-width: 460px;">
+st.markdown(f"""
+<div class="centered-box" style="max-width: 460px; margin-left: auto; margin-right: auto;">
     <div class="section-label">volume</div>
-    <div class="measurement-value">{:.1f} cm³</div>
+    <div class="measurement-value">{row['volume_cm3']:.1f} cm³</div>
 </div>
-<div class="centered-box" style="max-width: 460px;">
+<div class="centered-box" style="max-width: 460px; margin-left: auto; margin-right: auto;">
     <div class="section-label">bust</div>
-    <progress value="{}" max="150"></progress> {} cm
+    <progress value="{int(row['bust_circumference_cm'])}" max="150"></progress> {int(row['bust_circumference_cm'])} cm
     <div class="section-label">under</div>
-    <progress value="{}" max="150"></progress> {} cm
+    <progress value="{int(row['band_circumference_cm'])}" max="150"></progress> {int(row['band_circumference_cm'])} cm
 </div>
-""".format(
-    row['volume_cm3'],
-    int(row['bust_circumference_cm']), int(row['bust_circumference_cm']),
-    int(row['band_circumference_cm']), int(row['band_circumference_cm'])
-), unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
+

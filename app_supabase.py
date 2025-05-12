@@ -29,13 +29,13 @@ st.markdown("""
 <style>
     .centered-box {
         background-color: #f0f2f6;
-        padding: 15px;
-        margin-bottom: 15px;
+        padding: 12px;
+        margin-bottom: 12px;
         border-radius: 10px;
         text-align: center;
         color: black;
         font-family: sans-serif;
-        max-width: 280px;
+        max-width: 220px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -49,7 +49,7 @@ st.markdown("""
         margin-bottom: 5px;
     }
     .measurement-value {
-        font-size: 26px;
+        font-size: 24px;
         font-weight: bold;
     }
 </style>
@@ -92,11 +92,11 @@ with col2:
 
 # --- Volume and bust/under ---
 st.markdown("""
-<div class="centered-box">
+<div class="centered-box" style="max-width: 460px;">
     <div class="section-label">volume</div>
     <div class="measurement-value">{:.1f} cm³</div>
 </div>
-<div class="centered-box">
+<div class="centered-box" style="max-width: 460px;">
     <div class="section-label">bust</div>
     <progress value="{}" max="150"></progress> {} cm
     <div class="section-label">under</div>

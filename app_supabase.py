@@ -35,13 +35,16 @@ st.markdown("""
         text-align: center;
         color: black;
         font-family: sans-serif;
-        width: 100%;
+        flex: 1 1 160px;
+        min-width: 140px;
     }
     .flex-container {
         display: flex;
         justify-content: center;
         gap: 10px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        overflow-x: auto;
     }
     .title-text {
         font-size: 22px;
@@ -103,5 +106,4 @@ st.markdown(f"""
     <progress value="{int(row['band_circumference_cm'])}" max="150"></progress> {int(row['band_circumference_cm'])} cm
 </div>
 """, unsafe_allow_html=True)
-
 

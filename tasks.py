@@ -953,7 +953,26 @@ class BreastMeasurementTask(_Task):
         self._create_vertical_slice_at_x(x_cutoff, "X_Cutoff_Plane", (1.0, 1.0, 0.0, 1))
 
         # Step 2: get reference areas
-        band_area = get_front_area(get_object_slice(self.object, Direction.Z, z_band, self.section_height), x_cutoff)
+        band_slice = get_object_slice(self.object, Direction.Z, z_band, self.section_height)
+        if not band_slice:
+            print("Band slice not found.")
+            return
+
+        # Supprimer petits îlots, garder le plus grand
+        islands = get_object_islands(band_slice)
+        if len(islands) > 1:
+            print(f"Band slice → {len(islands)} îlots trouvés, suppression des petits.")
+            try:
+                largest = max(islands, key=lambda obj: get_object_volume(obj))
+                for isl in islands:
+                    if isl != largest:
+                        bpy.data.objects.remove(isl, do_unlink=True)
+                band_slice = largest
+            except Exception as e:
+                print("Erreur pendant le tri des îlots :", e)
+                return
+
+        band_area = get_front_area(band_slice, x_cutoff)
         top_area = get_front_area(get_object_slice(self.object, Direction.Z, z_top, self.section_height), x_cutoff)
         print(f"Band area: {band_area:.6f}, Top area: {top_area:.6f}")
 

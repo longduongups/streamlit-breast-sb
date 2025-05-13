@@ -579,9 +579,11 @@ class BreastMeasurementTask(_Task):
             band = AddonStorage.get("BAND")*100
             bust = AddonStorage.get("BUST")*100
             volume = AddonStorage.get("BREAST_VOLUME_SYM_DIFF") * 1_000_000  #  cm³
+            h_type = AddonStorage.get("BREAST_TYPE_HORIZONTAL")
+            v_type = AddonStorage.get("BREAST_TYPE_VERTICAL")
 
-            insert_breast_measurement(height, w_left, w_right, band, bust, volume)
-            send_to_supabase(height, w_left, w_right, band, bust, volume)
+            insert_breast_measurement(height, w_left, w_right, band, bust, volume, h_type, v_type)
+            send_to_supabase(height, w_left, w_right, band, bust, volume, h_type, v_type)
             self._finalize()
             return
 
@@ -765,7 +767,9 @@ class BreastMeasurementTask(_Task):
 
     
 
+
     def _breast_center(self, z_top):
+        
         def vector_analysis(name, vector, is_left):
             v_norm = vector.normalized()
 
@@ -794,6 +798,31 @@ class BreastMeasurementTask(_Task):
 
             print(f"{name} - Horizontal: {abs(angle_horizontal):.1f}° → {dir_h}")
             print(f"{name} - Vertical:   {abs(angle_vertical):.1f}° → {dir_v}")
+
+        def classify_breast_posture(vec_left: Vector, vec_right: Vector) -> dict:
+
+              def get_angles(vector: Vector) -> tuple[float, float]:
+                  v_norm = vector.normalized()
+                  xy_proj = Vector((v_norm.x, v_norm.y)).normalized()
+                  angle_horizontal = abs(math.degrees(math.atan2(xy_proj.y, -xy_proj.x)))
+                  angle_vertical = abs(math.degrees(math.asin(v_norm.z)))
+                  return angle_horizontal, angle_vertical
+
+              angle_h_left, angle_v_left = get_angles(vec_left)
+              angle_h_right, angle_v_right = get_angles(vec_right)
+
+              max_horizontal = max(angle_h_left, angle_h_right)
+              max_vertical = max(angle_v_left, angle_v_right)
+
+              horizontal_type = "exo" if max_horizontal > 15 else "natural"
+              vertical_type = "relax" if max_vertical > 15 else "natural"
+
+              return {
+                  "max_horizontal_angle": max_horizontal,
+                  "horizontal_type": horizontal_type,
+                  "max_vertical_angle": max_vertical,
+                  "vertical_type": vertical_type
+              }
 
         z_band = AddonStorage.get('Z_BAND')
         z_center = (z_top + z_band) / 2
@@ -831,6 +860,12 @@ class BreastMeasurementTask(_Task):
         self._create_vector_line("Vector_Right", right_center, best_right, (0.4, 0.6, 1, 1))
         vector_analysis("Left", vec_left, True)
         vector_analysis("Right", vec_right, False)
+        result = classify_breast_posture(vec_left, vec_right)
+
+        print(f"Horizontal max angle: {result['max_horizontal_angle']:.1f}° → {result['horizontal_type']}")
+        print(f"Vertical max angle:   {result['max_vertical_angle']:.1f}° → {result['vertical_type']}")
+        AddonStorage.set("BREAST_TYPE_HORIZONTAL", result["horizontal_type"])
+        AddonStorage.set("BREAST_TYPE_VERTICAL", result["vertical_type"])
 
 
     def _find_extreme_breast_points(self, z_bottom, z_top):

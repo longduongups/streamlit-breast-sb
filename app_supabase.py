@@ -4,10 +4,19 @@ import requests
 import matplotlib.pyplot as plt
 import datetime
 
+st.set_page_config(page_title="Mesures Poitrine", layout="wide")
+
 # --- Supabase credentials ---
 SUPABASE_URL = st.secrets["supabase"]["url"]
 SUPABASE_KEY = st.secrets["supabase"]["key"]
 TABLE = "breast_measurements"
+
+params = st.query_params
+client_id = st.text_input("🧍 Identifiant client", value=params.get("client_id", [""])[0])
+access_code = st.text_input("🔐 Code (6 chiffres)", type="password", value=params.get("code", [""])[0])
+
+if not client_id or not access_code:
+    st.stop()
 
 # --- Load data from Supabase ---
 @st.cache_data(ttl=10)
@@ -16,15 +25,22 @@ def load_data():
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}"
     }
-    url = f"{SUPABASE_URL}/rest/v1/{TABLE}?select=*"
+    url = f"{SUPABASE_URL}/rest/v1/{TABLE}?client_id=eq.{client_id}&access_code=eq.{access_code}&select=*"
     r = requests.get(url, headers=headers)
     if r.status_code != 200:
         st.error(f"Erreur: {r.text}")
         return pd.DataFrame()
-    return pd.DataFrame(r.json()).sort_values("timestamp", ascending=False)
+    data = r.json()
+    if not data:
+        st.warning("Aucune donnée trouvée pour cet identifiant et code.")
+        return pd.DataFrame()
+    df = pd.DataFrame(data)
+    if "timestamp" in df.columns:
+        df = df.sort_values("timestamp", ascending=False)
+    return df
 
 # --- Start of Streamlit App ---
-st.set_page_config(page_title="Mesures Poitrine", layout="wide")
+
 st.markdown("""
 <style>
     .centered-box {
@@ -79,12 +95,11 @@ st.title("📊 Visualisation des mesures de poitrine")
 df = load_data()
 
 if df.empty:
-    st.warning("Aucune donnée disponible.")
     st.stop()
 
-st.subheader("👋 Hello, voici vos mesures !")
-selected = st.selectbox("Sélectionnez une mesure :", df["timestamp"])
-row = df[df["timestamp"] == selected].iloc[0]
+st.subheader(f"👋 Hello, {client_id}! Here are your measurements:")
+selected = st.selectbox("Sélectionnez une mesure :", df["timestamp"] if "timestamp" in df.columns else df.index)
+row = df[df["timestamp"] == selected].iloc[0] if "timestamp" in df.columns else df.iloc[0]
 
 # --- Visual layout using flexbox ---
 st.markdown(f"""

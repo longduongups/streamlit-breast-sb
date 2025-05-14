@@ -126,13 +126,13 @@ st.markdown(f"""
     <div class="section-label">TYPE</div>
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <div class="type-display">{row['vertical_type']}</div>
             <div class="type-label">vertical</div>
+            <div class="type-display">{row['vertical_type']}</div>
         </div>
         <span style="border-left: 2px solid #aaa; height: 40px; margin: 0 10px;"></span>
         <div>
-            <div class="type-display">{row['horizontal_type']}</div>
             <div class="type-label">horizontal</div>
+            <div class="type-display">{row['horizontal_type']}</div>
         </div>
     </div>
 </div>

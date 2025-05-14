@@ -67,6 +67,11 @@ st.markdown("""
         font-size: 16px;
         margin-top: 10px;
     }
+    .type-label {
+        font-size: 13px;
+        color: #666;
+        margin-top: 2px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -117,12 +122,18 @@ st.markdown(f"""
 
 # --- Type display block ---
 st.markdown(f"""
-<div class="centered-box" style="max-width: 300px; margin-left: auto; margin-right: auto;">
+<div class="centered-box" style="max-width: 460px; margin-left: auto; margin-right: auto;">
     <div class="section-label">TYPE</div>
-    <div style="display: flex; justify-content: space-between;">
-        <span class="type-display">{row['vertical_type']}</span>
-        <span style="border-left: 2px solid #aaa; height: 20px; margin: 0 10px;"></span>
-        <span class="type-display">{row['horizontal_type']}</span>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <div class="type-display">{row['vertical_type']}</div>
+            <div class="type-label">vertical</div>
+        </div>
+        <span style="border-left: 2px solid #aaa; height: 40px; margin: 0 10px;"></span>
+        <div>
+            <div class="type-display">{row['horizontal_type']}</div>
+            <div class="type-label">horizontal</div>
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)

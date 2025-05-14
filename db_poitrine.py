@@ -16,11 +16,19 @@ def init_breast_table():
             width_right_cm REAL,
             band_circumference_cm REAL,
             bust_circumference_cm REAL,
-            volume_cm3 REAL,
-            horizontal_type TEXT,
-            vertical_type TEXT
+            volume_cm3 REAL
         )
     ''')
+    try:
+        cursor.execute("ALTER TABLE BreastMeasurements ADD COLUMN horizontal_type TEXT")
+    except sqlite3.OperationalError:
+        pass  
+
+    try:
+        cursor.execute("ALTER TABLE BreastMeasurements ADD COLUMN vertical_type TEXT")
+    except sqlite3.OperationalError:
+        pass  
+
     conn.commit()
     conn.close()
 

@@ -59,6 +59,14 @@ st.markdown("""
         font-size: 24px;
         font-weight: bold;
     }
+    .type-display {
+        background-color: #ddd;
+        padding: 8px 16px;
+        border-radius: 20px;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 10px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -107,3 +115,14 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# --- Type display block ---
+st.markdown(f"""
+<div class="centered-box" style="max-width: 300px; margin-left: auto; margin-right: auto;">
+    <div class="section-label">TYPE</div>
+    <div style="display: flex; justify-content: space-between;">
+        <span class="type-display">{row['vertical_type']}</span>
+        <span style="border-left: 2px solid #aaa; height: 20px; margin: 0 10px;"></span>
+        <span class="type-display">{row['horizontal_type']}</span>
+    </div>
+</div>
+""", unsafe_allow_html=True)

@@ -25,6 +25,6 @@ def send_to_supabase(height, w_left, w_right, band, bust, volume, h_type, v_type
     }
     response = requests.post(f"{SUPABASE_URL}/rest/v1/{TABLE}", headers=headers, json=payload)
     if response.ok:
-        print("✅ Mesure envoyée à Supabase")
+        print(" Mesure envoyée à Supabase")
     else:
-        print("❌ Erreur Supabase:", response.text)
+        print(" Erreur Supabase:", response.text)

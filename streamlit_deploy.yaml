@@ -27,8 +27,7 @@ Resources:
     Properties:
       InstanceType: t2.micro
       KeyName: mykey 
-      ImageId: ami-02b8534ff4b424939
-  # Ubuntu 22.04 
+      ImageId: ami-0fc5d935ebf8bc3bc  # Ubuntu 22.04 LTS pour eu-west-3 (Paris)
       SecurityGroups:
         - !Ref StreamlitSecurityGroup
       Tags:

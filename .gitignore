@@ -1,1 +1,16 @@
 .streamlit/secrets.toml
+pycache/
+*.pyc
+*.pem
+# Ignore tous les fichiers Blender / add-on
+*.db
+utils/
+addon.py
+controllers.py
+db_poitrine.py
+db_supabase.py
+enums.py
+tasks.py
+tests.py
+ui.py
+zdoc.adoc

@@ -765,9 +765,6 @@ class BreastMeasurementTask(_Task):
 
         obj.show_in_front = True  
 
-    
-
-
     def _breast_center(self, z_top):
         
         def vector_analysis(name, vector, is_left):
@@ -993,7 +990,6 @@ class BreastMeasurementTask(_Task):
             print("Band slice not found.")
             return
 
-        # Supprimer petits îlots, garder le plus grand
         islands = get_object_islands(band_slice)
         if len(islands) > 1:
             print(f"Band slice → {len(islands)} îlots trouvés, suppression des petits.")

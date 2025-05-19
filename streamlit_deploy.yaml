@@ -1,31 +1,38 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Déploiement d'une app Streamlit sur EC2 avec clé intégrée
+Description: Déploiement automatique d'une app Streamlit sur EC2 via GitHub
 
 Parameters:
   GitRepoURL:
     Type: String
-    Default: https://github.com/ton-utilisateur/ton-repo.git
-    Description: Lien GitHub application Streamlit
+    Default: https://github.com/longduongups/streamlit-breast-app.git
+    Description: Lien GitHub 
 
 Resources:
   StreamlitSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Autorise HTTP pour Streamlit
+      GroupDescription: Autoriser HTTP pour Streamlit
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8501
+          ToPort: 8501
           CidrIp: 0.0.0.0/0
 
   StreamlitInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      KeyName: my-key  # Remplace par le nom exact de ta clé EC2 (sans .pem)
-      ImageId: ami-0fc5d935ebf8bc3bc  # Ubuntu 22.04 LTS - région Paris
+      KeyName: mykey 
+      ImageId: ami-01c4258b1f3b3c0a1  # Ubuntu 22.04 
       SecurityGroups:
         - !Ref StreamlitSecurityGroup
+      Tags:
+        - Key: Name
+          Value: StreamlitApp
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -34,10 +41,11 @@ Resources:
           pip3 install streamlit pandas requests
           cd /home/ubuntu
           git clone ${GitRepoURL}
-          cd $(basename ${GitRepoURL} .git)
-          nohup streamlit run app.py --server.port 80 --server.enableCORS false &
+          REPO_NAME=$(basename ${GitRepoURL} .git)
+          cd $REPO_NAME
+          nohup streamlit run app_supabase.py --server.port 80 --server.enableCORS false &
 
 Outputs:
   AppURL:
-    Description: Lien de l'application Streamlit
+    Description: Lien vers l'application Streamlit déployée
     Value: !Sub "http://${StreamlitInstance.PublicIp}"

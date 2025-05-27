@@ -78,6 +78,6 @@ if emails:
     selected_email = st.selectbox("Choisir un email :", emails)
     if st.button("Visualiser les mesures"):
         st.session_state["email"] = selected_email
-        st.switch_page("pages/Visualiser.py")
+        st.switch_page("visualiser.py")
 else:
     st.info("Aucun email trouvé dans les mesures.")

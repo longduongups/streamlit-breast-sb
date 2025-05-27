@@ -13,9 +13,10 @@ TABLE_MODELS = "pending_measurements"
 TABLE_MEASURES = "breast_measurements"
 STORAGE_BUCKET = "models"
 
-st.set_page_config(page_title="Uploader un modèle 3D", layout="wide")
+st.set_page_config(page_title="Accueil - Upload 3D", layout="wide")
 st.title("📤 Uploader un modèle 3D & Visualiser des mesures")
 
+# --- Fonctions utiles ---
 def sanitize_filename(name):
     name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode("ascii")
     return re.sub(r"[^\w\-_.]", "_", name)
@@ -78,6 +79,4 @@ if emails:
     selected_email = st.selectbox("Choisir un email :", emails)
     if st.button("Visualiser les mesures"):
         st.session_state["email"] = selected_email
-        st.switch_page("visualiser")
-else:
-    st.info("Aucun email trouvé dans les mesures.")
+        st.switch_page("📊 Visualiser les mesures")  # <== Utilise bien le titre de pag_

@@ -2,20 +2,21 @@ import streamlit as st
 import pandas as pd
 import requests
 
-# --- Supabase config ---
-SUPABASE_URL = st.secrets["supabase"]["url"]
-SUPABASE_KEY = st.secrets["supabase"]["key"]
-TABLE = "breast_measurements"
+# --- Config page ---
+st.set_page_config(page_title="📊 Visualiser les mesures", layout="wide")
+st.title("📊 Visualiser les mesures")
 
-st.set_page_config(page_title="Visualisation des mesures", layout="wide")
-
-# --- Lire email depuis session_state ---
+# --- Lire l'email transmis depuis la session ---
 if "email" not in st.session_state:
-    st.error("Aucun email sélectionné.")
+    st.warning("Aucun email transmis.")
     st.stop()
 
 email = st.session_state["email"]
-st.title(f"📊 Mesures de poitrine pour {email}")
+
+# --- Supabase credentials ---
+SUPABASE_URL = st.secrets["supabase"]["url"]
+SUPABASE_KEY = st.secrets["supabase"]["key"]
+TABLE = "breast_measurements"
 
 @st.cache_data(ttl=10)
 def get_data(email):
@@ -36,7 +37,7 @@ if df.empty:
 selected = st.selectbox("📅 Sélectionner une date :", df["timestamp"])
 row = df[df["timestamp"] == selected].iloc[0]
 
-# --- CSS & Layout ---
+# --- CSS affichage ---
 st.markdown("""
 <style>
     .centered-box {
@@ -83,7 +84,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- Bloc Gauche / Droite ---
+# --- Layout affichage ---
 st.markdown(f"""
 <div class="flex-container">
     <div class="centered-box">
@@ -103,7 +104,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Volume et tour de poitrine ---
 st.markdown(f"""
 <div class="centered-box" style="max-width: 460px; margin-left: auto; margin-right: auto;">
     <div class="section-label">volume</div>
@@ -117,7 +117,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Types verticaux/horizontaux ---
 st.markdown(f"""
 <div class="centered-box" style="max-width: 460px; margin-left: auto; margin-right: auto;">
     <div class="section-label">TYPE</div>
@@ -135,6 +134,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Retour à l'accueil ---
+# --- Retour ---
 if st.button("⬅️ Retour à l'accueil"):
     st.switch_page("app_supabase.py")

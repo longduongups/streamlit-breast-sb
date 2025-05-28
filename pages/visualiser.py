@@ -6,7 +6,7 @@ import os
 # --- Configuration de la page ---
 st.set_page_config(page_title="🎀 Boo - Measurements Viewer", layout="wide")
 
-# --- CSS : fond rose + blocs blancs ---
+# --- CSS : fond rose + blocs personnalisés ---
 st.markdown("""
     <style>
         .stApp {
@@ -20,7 +20,14 @@ st.markdown("""
             text-align: center;
             color: black;
             font-family: sans-serif;
-            max-width: 460px;
+        }
+        .left-box {
+            flex: 1 1 200px;
+            min-width: 140px;
+        }
+        .right-box {
+            flex: 2 1 320px;
+            min-width: 200px;
         }
         .flex-container {
             display: flex;
@@ -60,7 +67,7 @@ st.markdown("<h1 style='text-align: center; color: #ff69b4;'>🎀 Boo - Measurem
 
 # --- Lire email session ---
 if "email" not in st.session_state:
-    st.warning("Aucun email transmis.")
+    st.warning("No email provided.")
     st.stop()
 
 email = st.session_state["email"]
@@ -76,56 +83,56 @@ def get_data(email):
     url = f"{SUPABASE_URL}/rest/v1/{TABLE}?email=eq.{email}&select=*"
     r = requests.get(url, headers=headers)
     if r.status_code != 200:
-        st.error("Erreur Supabase : " + r.text)
+        st.error("Supabase error: " + r.text)
         return pd.DataFrame()
     return pd.DataFrame(r.json())
 
 df = get_data(email)
 
 if df.empty:
-    st.warning("Aucune donnée trouvée pour cet email.")
+    st.warning("No measurement data found for this email.")
     st.stop()
 
 # --- Sélection de date ---
 st.markdown('<div style="font-weight: bold; font-size: 16px; color: black; margin-top: 10px;">📅 Select a date:</div>', unsafe_allow_html=True)
-
-# Selectbox sans label
 selected = st.selectbox("", df["timestamp"])
 row = df[df["timestamp"] == selected].iloc[0]
 
-# --- Blocs de mesures ---
+# --- Blocs GAUCHE / DROITE avec tailles personnalisées ---
 st.markdown(f"""
 <div class="flex-container">
-    <div class="centered-box">
-        <div class="section-label">GAUCHE</div>
-        <div>Hauteur</div>
+    <div class="centered-box left-box">
+        <div class="section-label">LEFT</div>
+        <div>Height</div>
         <div class="measurement-value">{row['height_cm']:.1f} cm</div>
-        <div>Largeur</div>
+        <div>Width</div>
         <div class="measurement-value">{row['width_left_cm']:.1f} cm</div>
     </div>
-    <div class="centered-box">
-        <div class="section-label">DROITE</div>
-        <div>Hauteur</div>
+    <div class="centered-box right-box">
+        <div class="section-label">RIGHT</div>
+        <div>Height</div>
         <div class="measurement-value">{row['height_cm']:.1f} cm</div>
-        <div>Largeur</div>
+        <div>Width</div>
         <div class="measurement-value">{row['width_right_cm']:.1f} cm</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
+# --- Autres blocs ---
 st.markdown(f"""
 <div class="centered-box">
     <div class="section-label">Volume</div>
     <div class="measurement-value">{row['volume_cm3']:.1f} cm³</div>
 </div>
 <div class="centered-box">
-    <div class="section-label">Tour de poitrine</div>
+    <div class="section-label">Bust Circumference</div>
     <progress value="{int(row['bust_circumference_cm'])}" max="150"></progress> {int(row['bust_circumference_cm'])} cm
-    <div class="section-label">Sous-poitrine</div>
+    <div class="section-label">Under Bust</div>
     <progress value="{int(row['band_circumference_cm'])}" max="150"></progress> {int(row['band_circumference_cm'])} cm
 </div>
 """, unsafe_allow_html=True)
 
+# --- Bloc type ---
 st.markdown(f"""
 <div class="centered-box">
     <div class="section-label">TYPE</div>
@@ -144,5 +151,5 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # --- Retour accueil ---
-if st.button("⬅️ Retour à l'accueil"):
+if st.button("⬅️ Back to home"):
     st.switch_page("app_supabase.py")

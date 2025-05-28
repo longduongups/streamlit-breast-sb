@@ -3,10 +3,10 @@ import pandas as pd
 import requests
 import os
 
-# --- Configuration de la page ---
+# --- Page configuration ---
 st.set_page_config(page_title="🎀 Boo - Measurements Viewer", layout="wide")
 
-# --- CSS : fond rose + blocs personnalisés ---
+# --- CSS styling ---
 st.markdown("""
     <style>
         .stApp {
@@ -21,12 +21,8 @@ st.markdown("""
             color: black;
             font-family: sans-serif;
         }
-        .left-box {
-            flex: 1 1 200px;
-            min-width: 140px;
-        }
-        .right-box {
-            flex: 2 1 320px;
+        .equal-box {
+            flex: 1 1 260px;
             min-width: 200px;
         }
         .flex-container {
@@ -62,17 +58,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Titre ---
+# --- Title ---
 st.markdown("<h1 style='text-align: center; color: #ff69b4;'>🎀 Boo - Measurements Viewer</h1>", unsafe_allow_html=True)
 
-# --- Lire email session ---
+# --- Check email in session ---
 if "email" not in st.session_state:
     st.warning("No email provided.")
     st.stop()
 
 email = st.session_state["email"]
 
-# --- Supabase config ---
+# --- Supabase configuration ---
 SUPABASE_URL = st.secrets["supabase"]["url"]
 SUPABASE_KEY = st.secrets["supabase"]["key"]
 TABLE = "breast_measurements"
@@ -93,22 +89,22 @@ if df.empty:
     st.warning("No measurement data found for this email.")
     st.stop()
 
-# --- Sélection de date ---
+# --- Date selection ---
 st.markdown('<div style="font-weight: bold; font-size: 16px; color: black; margin-top: 10px;">📅 Select a date:</div>', unsafe_allow_html=True)
 selected = st.selectbox("", df["timestamp"])
 row = df[df["timestamp"] == selected].iloc[0]
 
-# --- Blocs GAUCHE / DROITE avec tailles personnalisées ---
+# --- LEFT / RIGHT blocks (equal size) ---
 st.markdown(f"""
 <div class="flex-container">
-    <div class="centered-box left-box">
+    <div class="centered-box equal-box">
         <div class="section-label">LEFT</div>
         <div>Height</div>
         <div class="measurement-value">{row['height_cm']:.1f} cm</div>
         <div>Width</div>
         <div class="measurement-value">{row['width_left_cm']:.1f} cm</div>
     </div>
-    <div class="centered-box right-box">
+    <div class="centered-box equal-box">
         <div class="section-label">RIGHT</div>
         <div>Height</div>
         <div class="measurement-value">{row['height_cm']:.1f} cm</div>
@@ -118,7 +114,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Autres blocs ---
+# --- Volume + bust/under bust ---
 st.markdown(f"""
 <div class="centered-box">
     <div class="section-label">Volume</div>
@@ -132,7 +128,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Bloc type ---
+# --- TYPE block ---
 st.markdown(f"""
 <div class="centered-box">
     <div class="section-label">TYPE</div>
@@ -150,6 +146,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- Retour accueil ---
+# --- Back button ---
 if st.button("⬅️ Back to home"):
     st.switch_page("app_supabase.py")

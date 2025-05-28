@@ -60,9 +60,9 @@ st.markdown("""
 
 # --- Title ---
 st.markdown("""
-    <div style="text-align: center;">
-        <div style="font-size: 36px; color: #ff69b4; font-weight: bold;">🎀 Boo</div>
-        <div style="font-size: 16px; color: black; font-weight: bold; margin-top: -5px;">Measurements Viewer</div>
+    <div style="text-align: center; line-height: 1.2;">
+        <div style="font-size: 44px; color: #ff69b4; font-weight: bold;">🎀 Boo</div>
+        <div style="font-size: 28px; color: #ff69b4; font-weight: bold;">Measurements Viewer</div>
     </div>
 """, unsafe_allow_html=True)
 

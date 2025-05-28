@@ -59,7 +59,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Title ---
-st.markdown("<h1 style='text-align: center; color: #ff69b4;'>🎀 Boo - Measurements Viewer</h1>", unsafe_allow_html=True)
+st.markdown("""
+    <div style="text-align: center;">
+        <div style="font-size: 30px; color: #ff69b4; font-weight: bold;">🎀 Boo</div>
+        <div style="font-size: 20px; color: #333; margin-top: -5px;">Measurements Viewer</div>
+    </div>
+""", unsafe_allow_html=True)
 
 # --- Check email in session ---
 if "email" not in st.session_state:
